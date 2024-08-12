@@ -98,6 +98,21 @@ export class BedsController {
 
     @ApiResponse({
         status: 200,
+        description: 'Get total number of beds in a hospital',
+        type: Number
+    })
+    @ApiQuery({
+        name: 'hospital_id',
+        required: true,
+        type: Number
+    })
+    @Get('total')
+    getTotalBeds(@Query('hospital_id') hospital_id: number): Promise<number> {
+        return this.bedsService.getTotalBedsInHospital(hospital_id);
+    }
+
+    @ApiResponse({
+        status: 200,
         description: 'Get bed by id',
         type: Bed
     })
