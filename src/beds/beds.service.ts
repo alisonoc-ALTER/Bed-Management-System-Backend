@@ -58,6 +58,20 @@ export class BedsService {
         return await this.getBedStatusByWardIds(wardIds);
     }
 
+    async getTotalBedsInHospital(hospital_id: number): Promise<number> {
+        const wardIds = (await this.wardsService.findAll(hospital_id)).map(
+            (ward) => ward.id
+        );
+        const beds = wardIds.map((ward_id) => {
+            return this.bedsRepository.find({
+                where: { ward_id: ward_id }
+            });
+        });
+        const bedsArray = await Promise.all(beds);
+        const hospitalSize = bedsArray.flat().length;
+        return hospitalSize;
+    }
+
     async getBedStatusByWardIds(ward_ids: number[]): Promise<BedStatus[]> {
         const bedStatusPromises = ward_ids.map(async (ward_id) => {
             return this.getBedStatusByWard(ward_id);
